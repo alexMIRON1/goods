@@ -16,6 +16,11 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
+    /**
+     * using for get customer by id
+     * @param customerId customer id
+     * @return {@link Customer}
+     */
     public Customer getCustomerById(Long customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new WrongInputException("customer was not found by this id " + customerId));
