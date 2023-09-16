@@ -38,36 +38,12 @@ public class OrderJobScheduler {
     public void scheduleCheckNotPaidOrder(Order order) {
         try {
             threadPoolExecutor
-                    .schedule(() -> orderJobExecutor.checkNotPaidOrderForDeletion(order), 1, TimeUnit.MINUTES);
+                    .schedule(() -> orderJobExecutor.checkNotPaidOrderForDeletion(order), delay, TimeUnit.MINUTES);
             log.info("job for checking not payed order was planned ");
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error("something went wrong during the scheduling");
             throw new ScheduleFailedException("something went wrong during scheduling");
         }
 
     }
-//
-//    /**
-//     * using for check not paid order for deletion by id
-//     *
-//     * @param order order for checking
-//     */
-//    private void checkNotPaidOrderForDeletion(Order order) {
-//        if (order.getOrderStatus() == OrderStatus.CREATED) {
-//            getOrderItemsByOrder(order)
-//                    .forEach(orderItem -> productService
-//                            .increaseQuantityProduct(orderItem.getProduct().getId(), orderItem.getQuantity()));
-//            log.info("increasing quantity product");
-//            deleteOrder(order);
-//        }
-//    }
-//
-//    private void deleteOrder(Order order) {
-//        orderRepository.deleteById(order.getId());
-//        log.info("order was deleted");
-//    }
-//
-//    private List<OrderItem> getOrderItemsByOrder(Order order) {
-//        return orderItemService.getOrderItemsByOrder(order);
-//    }
 }

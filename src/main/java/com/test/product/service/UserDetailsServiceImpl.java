@@ -26,12 +26,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final CustomerRepository customerRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Customer customer = customerRepository.findCustomerByCustomerLogin(s)
-                .orElseThrow(() -> new WrongInputException("user with this login " + s + " does not exist"));
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" +
-                customer.getCustomerRole().name()));
-        return new org.springframework.security.core.userdetails.User(customer.getCustomerLogin(),
-                customer.getCustomerPassword(), authorities);
+    public UserDetails loadUserByUsername(String s) {
+        try {
+            Customer customer = customerRepository.findCustomerByCustomerLogin(s)
+                    .orElseThrow(() -> new WrongInputException("user with this login " + s + " does not exist"));
+            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" +
+                    customer.getCustomerRole().name()));
+            return new org.springframework.security.core.userdetails.User(customer.getCustomerLogin(),
+                    customer.getCustomerPassword(), authorities);
+        } catch (UsernameNotFoundException exception) {
+            log.debug("user was not found by this login -> {}", s);
+            throw new WrongInputException("Wrong login, try again");
+        }
+
     }
 }
