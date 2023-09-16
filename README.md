@@ -30,7 +30,7 @@ create schema shop;
 3. After that click LCM on this
 
 ![lcm_click.png](images/lcm_click.png)
-4. Use this command in psql command line after application will have launched 
+4. Use this command in psql command line after application will have launched(in next versions we will connect flyway and you will not do it 🙂)
 ```
 INSERT INTO shop.customer (id, customer_full_name, customer_login, customer_password, customer_role) VALUES(1, 'Manager',
 'manager', '$2a$12$0GXZSVMlZVvjb2wufl5G3.kQBYT9eSG225zB0sG7PGRvnoL2YmFuy', 'MANAGER');
