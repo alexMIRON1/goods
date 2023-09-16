@@ -1,11 +1,12 @@
 package com.test.product.service;
 
+import com.test.product.model.entity.Customer;
 import com.test.product.model.entity.Order;
 import com.test.product.model.entity.OrderItem;
 import com.test.product.model.entity.OrderStatus;
 import com.test.product.model.entity.Product;
+import com.test.product.model.entity.Role;
 import com.test.product.model.repository.OrderRepository;
-import com.test.product.service.exception.WrongInputException;
 import com.test.product.service.job.OrderJobScheduler;
 import com.test.product.web.dto.ClientWantedProduct;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * this class responsible for main business logic for {@link Order} when working with creating and charge
@@ -43,6 +45,7 @@ public class OrderTransactionService {
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalPrice = new BigDecimal(0);
         for (ClientWantedProduct clientWantedProduct : clientWantedProducts) {
+            setCustomer(order, clientWantedProduct);
             Product product = retrieveProductFromClientWantedProduct(clientWantedProduct);
             Integer wantedProductQuantity = clientWantedProduct.getWantedProductQuantity();
             Long orderItemId = orderItemService.createOrderItem(order, product, wantedProductQuantity);
@@ -50,7 +53,6 @@ public class OrderTransactionService {
             log.info("order item was added client wanted products");
             decreaseQuantity(product, wantedProductQuantity);
             totalPrice = increaseTotalPrice(product, totalPrice, wantedProductQuantity);
-            setCustomer(order, clientWantedProduct);
         }
         order.setOrderTotalPrice(totalPrice);
         order.setOrderItems(orderItems);
@@ -77,7 +79,7 @@ public class OrderTransactionService {
     private Order getOrderById(Long orderId) {
         return orderRepository
                 .findById(orderId)
-                .orElseThrow(() -> new WrongInputException("such order by this id does not exist, id - " + orderId));
+                .orElseThrow(() -> new NoSuchElementException("such order by this id does not exist, id - " + orderId));
     }
 
     private Product retrieveProductFromClientWantedProduct(ClientWantedProduct clientWantedProduct) {
@@ -101,8 +103,13 @@ public class OrderTransactionService {
     }
 
     private void setCustomer(Order order, ClientWantedProduct clientWantedProduct) {
-        Long clientId = clientWantedProduct.getClientId();
-        order.setOrderBuyerCustomer(customerService.getCustomerById(clientId));
-        log.info("setting buyer id -> {}", clientId);
+        Customer customer = customerService.getCustomerById(clientWantedProduct.getClientId());
+        if (customer.getCustomerRole() == Role.MANAGER) {
+            log.debug("was used manager id for buying");
+            throw new IllegalArgumentException("such customer does not exist");
+        }
+        log.info("get buyer customer -> {}", customer.getCustomerFullName());
+        order.setOrderBuyerCustomer(customerService.getCustomerById(customer.getId()));
+        log.info("setting buyer id -> {}", customer.getId());
     }
 }

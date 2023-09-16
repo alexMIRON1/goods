@@ -4,12 +4,12 @@ import com.test.product.model.entity.Order;
 import com.test.product.model.entity.OrderItem;
 import com.test.product.model.entity.Product;
 import com.test.product.model.repository.OrderItemRepository;
-import com.test.product.service.exception.WrongInputException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * this class responsible for main business logic for {@link OrderItem}
@@ -30,7 +30,7 @@ public class OrderItemService {
      */
     public OrderItem getOrderItemById(Long orderItemId) {
         return orderItemRepository.findById(orderItemId)
-                .orElseThrow(() -> new WrongInputException("Such order item does not exist"));
+                .orElseThrow(() -> new NoSuchElementException("Such order item does not exist"));
     }
 
     /**

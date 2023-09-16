@@ -2,12 +2,12 @@ package com.test.product.service;
 
 import com.test.product.model.entity.Customer;
 import com.test.product.model.repository.CustomerRepository;
-import com.test.product.service.exception.WrongInputException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,7 +55,7 @@ class CustomerServiceTest {
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
 
-        assertThrows(WrongInputException.class, () -> customerService.getCustomerById(customerId));
+        assertThrows(NoSuchElementException.class, () -> customerService.getCustomerById(customerId));
         verify(customerRepository, times(1)).findById(customerId);
     }
 }

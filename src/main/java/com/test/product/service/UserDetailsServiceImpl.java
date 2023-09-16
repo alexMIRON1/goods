@@ -2,16 +2,15 @@ package com.test.product.service;
 
 import com.test.product.model.entity.Customer;
 import com.test.product.model.repository.CustomerRepository;
-import com.test.product.service.exception.WrongInputException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * class responsible for implementation {@link UserDetailsService}
@@ -27,17 +26,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) {
-        try {
-            Customer customer = customerRepository.findCustomerByCustomerLogin(s)
-                    .orElseThrow(() -> new WrongInputException("user with this login " + s + " does not exist"));
-            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" +
-                    customer.getCustomerRole().name()));
-            return new org.springframework.security.core.userdetails.User(customer.getCustomerLogin(),
-                    customer.getCustomerPassword(), authorities);
-        } catch (UsernameNotFoundException exception) {
-            log.debug("user was not found by this login -> {}", s);
-            throw new WrongInputException("Wrong login, try again");
-        }
+        Customer customer = customerRepository.findCustomerByCustomerLogin(s)
+                .orElseThrow(() -> new NoSuchElementException("user with this login " + s + " does not exist"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" +
+                customer.getCustomerRole().name()));
+        return new org.springframework.security.core.userdetails.User(customer.getCustomerLogin(),
+                customer.getCustomerPassword(), authorities);
 
     }
 }
