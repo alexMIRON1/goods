@@ -5,7 +5,6 @@ import com.test.product.model.entity.OrderItem;
 import com.test.product.model.entity.OrderStatus;
 import com.test.product.model.entity.Product;
 import com.test.product.model.repository.OrderRepository;
-import com.test.product.service.exception.WrongInputException;
 import com.test.product.service.job.OrderJobScheduler;
 import com.test.product.web.dto.ClientWantedProduct;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,7 +91,7 @@ class OrderTransactionServiceTest {
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
-        assertThrows(WrongInputException.class, () -> orderTransactionService.payOrderById(orderId));
+        assertThrows(NoSuchElementException.class, () -> orderTransactionService.payOrderById(orderId));
         verify(orderRepository, times(0)).save(any(Order.class));
     }
 }

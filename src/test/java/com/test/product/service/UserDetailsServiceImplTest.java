@@ -3,14 +3,13 @@ package com.test.product.service;
 import com.test.product.model.entity.Customer;
 import com.test.product.model.entity.Role;
 import com.test.product.model.repository.CustomerRepository;
-import com.test.product.service.exception.WrongInputException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,7 +58,7 @@ class UserDetailsServiceImplTest {
 
         when(customerRepository.findCustomerByCustomerLogin(username)).thenReturn(Optional.empty());
 
-        assertThrows(WrongInputException.class, () -> userDetailsService.loadUserByUsername(username));
+        assertThrows(NoSuchElementException.class, () -> userDetailsService.loadUserByUsername(username));
         verify(customerRepository, times(1)).findCustomerByCustomerLogin(username);
     }
 }

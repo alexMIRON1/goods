@@ -2,12 +2,12 @@ package com.test.product.service;
 
 import com.test.product.model.entity.Product;
 import com.test.product.model.repository.ProductRepository;
-import com.test.product.service.exception.WrongInputException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -34,7 +34,7 @@ public class ProductService {
      * @return {@link Product}
      */
     public Product getProductById(Long productId) {
-        return productRepository.findById(productId).orElseThrow(() -> new WrongInputException("Such product does not exist"));
+        return productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("Such product does not exist"));
     }
 
     /**
@@ -45,7 +45,7 @@ public class ProductService {
     public void addProduct(Product product) {
         if (product == null) {
             log.debug("Wrong input exception -> {}", product);
-            throw new WrongInputException("inputted product is null ");
+            throw new IllegalArgumentException("inputted product is null ");
         }
         productRepository.save(product);
         log.info("product was saved -> {}", product.getProductName());
@@ -64,7 +64,7 @@ public class ProductService {
         if (productQuantity < wantedProductQuantity) {
             log.debug("product entity -> {}, less than wanted product quantity -> {}", productQuantity,
                     wantedProductQuantity);
-            throw new WrongInputException("We have not so many quantity as you want, our quantity -> " + productQuantity);
+            throw new IllegalArgumentException("We have not so many quantity as you want, our quantity -> " + productQuantity);
         }
         log.info("current product quantity -> {}", productQuantity);
         product.setProductQuantity(productQuantity - wantedProductQuantity);

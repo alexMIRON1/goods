@@ -2,12 +2,12 @@ package com.test.product.service;
 
 import com.test.product.model.entity.Product;
 import com.test.product.model.repository.ProductRepository;
-import com.test.product.service.exception.WrongInputException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,7 +62,7 @@ class ProductServiceTest {
 
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
-        assertThrows(WrongInputException.class, () -> productService.getProductById(productId));
+        assertThrows(NoSuchElementException.class, () -> productService.getProductById(productId));
         verify(productRepository, times(1)).findById(productId);
     }
 
@@ -78,7 +78,7 @@ class ProductServiceTest {
     void testAddProductNullInput() {
         Product product = null;
 
-        assertThrows(WrongInputException.class, () -> productService.addProduct(product));
+        assertThrows(IllegalArgumentException.class, () -> productService.addProduct(product));
         verify(productRepository, times(0)).save(any());
     }
 
@@ -107,7 +107,7 @@ class ProductServiceTest {
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
-        assertThrows(WrongInputException.class, () -> productService.decreaseQuantityProduct(productId, 10));
+        assertThrows(IllegalArgumentException.class, () -> productService.decreaseQuantityProduct(productId, 10));
         verify(productRepository, times(0)).save(product);
     }
 
