@@ -18,9 +18,6 @@ create database shop;
 \c shop
 
 create schema shop;
-
-INSERT INTO shop.customer (id, customer_full_name, customer_login, customer_password, customer_role) VALUES(1, 'Manager',
-'manager', '$2a$12$0GXZSVMlZVvjb2wufl5G3.kQBYT9eSG225zB0sG7PGRvnoL2YmFuy', 'MANAGER');
 ```
 
 ## Instruction for start up application
@@ -33,11 +30,16 @@ INSERT INTO shop.customer (id, customer_full_name, customer_login, customer_pass
 3. After that click LCM on this
 
 ![lcm_click.png](images/lcm_click.png)
+4. Use this command in psql command line after application will have launched 
+```
+INSERT INTO shop.customer (id, customer_full_name, customer_login, customer_password, customer_role) VALUES(1, 'Manager',
+'manager', '$2a$12$0GXZSVMlZVvjb2wufl5G3.kQBYT9eSG225zB0sG7PGRvnoL2YmFuy', 'MANAGER');
+```
 
-4. You can open postman or any other comfortable tools for you to make
+5. You can open postman or any other comfortable tools for you to make
    rest call.
 
-5. The first of all you need to authenticate like user
+6. The first of all you need to authenticate like user
 
 endpoint
 
@@ -45,7 +47,7 @@ endpoint
 http://localhost:8080/api/v1/auth/register
 ```
 
-5. After that login to app, using password and login
+7. After that login to app, using password and login
 
 endpoint
 
@@ -53,13 +55,13 @@ endpoint
 http://localhost:8080/api/v1/auth/signIn
 ```
 
-6. You will get jwt token, something like this
+8. You will get jwt token, something like this
 
 ![jwt_token.png](images/jwt_token.png)
 
 use it when you make different endpoint in authorization tab
 
-7. Also, you have opportunity to configure application how you want,
+9. Also, you have opportunity to configure application how you want,
    what will be deletion time after creation, and how many pools to use
    for ThreadPoolExecutor(IMPORTANT: use not more than you have on your machine)
 
