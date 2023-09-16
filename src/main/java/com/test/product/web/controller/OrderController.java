@@ -1,6 +1,6 @@
 package com.test.product.web.controller;
 
-import com.test.product.service.OrderService;
+import com.test.product.service.OrderTransactionService;
 import com.test.product.web.dto.ClientWantedProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,15 +21,15 @@ import java.util.List;
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 public class OrderController {
-    private final OrderService orderService;
+    private final OrderTransactionService orderTransactionService;
 
     @PostMapping
     public Long createOrder(@RequestBody List<ClientWantedProduct> clientWantedProducts) {
-        return orderService.createOrder(clientWantedProducts);
+        return orderTransactionService.createOrder(clientWantedProducts);
     }
 
     @PutMapping("/{orderId}")
     public void payOrder(@PathVariable Long orderId) {
-        orderService.payOrderById(orderId);
+        orderTransactionService.payOrderById(orderId);
     }
 }
