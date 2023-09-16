@@ -6,5 +6,5 @@ package com.test.product.model.entity;
  * @author Oleksandr Myronenko
  */
 public enum OrderStatus {
-    CREATED, PAID, FAILED
+    CREATED, PAID
 }

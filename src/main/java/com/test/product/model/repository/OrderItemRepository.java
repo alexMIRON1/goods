@@ -19,4 +19,11 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
      * @return list of {@link OrderItem}
      */
     List<OrderItem> findByOrder(Order order);
+
+    /**
+     * using for deleting order items by order
+     *
+     * @param order order
+     */
+    void deleteByOrder(Order order);
 }
